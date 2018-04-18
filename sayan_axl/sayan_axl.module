@@ -29,45 +29,45 @@ function sayan_axl_help($route_name, RouteMatchInterface $route_match) {
  */
 function sayan_axl_theme() {
   return [
-  'sayan_axl' => [
-  'render element' => 'children',
-  ],
+    'sayan_axl' => [
+      'render element' => 'children',
+    ],
   ];
 }
 
 /**
  * Implements hook_form_alter().
  */
-function sayan_axl_form_alter(&$form, FormStateInterface $form_state, $form_id){
+function sayan_axl_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
-  if($form_id == 'system_site_information_settings'){
+  if ($form_id == 'system_site_information_settings') {
     $site_api_key = \Drupal::config('core.site_information')->get('siteapikey');
 
-    $form['siteapikey'] = array(
-        '#title' => t('Site API KEY'),
-        '#default_value' => isset($site_api_key)? $site_api_key : t('No API Key Yet'),
-        '#type' => 'textfield',
-        '#maxlength' => 64,
-        '#size' => 64,
-        '#weight' => '-100',
-        '#placholder' => t('Enter API Key'),
+    $form['siteapikey'] = [
+      '#title' => t('Site API KEY'),
+      '#default_value' => isset($site_api_key) ? $site_api_key : t('No API Key Yet'),
+      '#type' => 'textfield',
+      '#maxlength' => 64,
+      '#size' => 64,
+      '#weight' => '-100',
+      '#placholder' => t('Enter API Key'),
 
-    );
+    ];
 
-    if(isset($site_api_key)){
+    if (isset($site_api_key)) {
       $form['actions']['submit']['#value'] = t('Update Configuration');
     }
 
     $form['actions']['submit']['#submit'][] = 'sayan_axl_custom_form_submit';
 
-
   }
 }
+
 /**
  * Custom Form Submit Funtion.
  */
-function sayan_axl_custom_form_submit(&$form, &$form_state){
+function sayan_axl_custom_form_submit(&$form, &$form_state) {
 
-  \Drupal::configFactory()->getEditable('core.site_information')->set('siteapikey',$form_state->getValue('siteapikey'))->save();
+  \Drupal::configFactory()->getEditable('core.site_information')->set('siteapikey', $form_state->getValue('siteapikey'))->save();
   drupal_set_message(t("API KEY Saved Successfully"));
 }

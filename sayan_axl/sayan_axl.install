@@ -1,8 +1,13 @@
 <?php
 
 /**
+ * @file
+ * Install File.
+ */
+
+/**
  * Implements hook_uninstall().
  */
-function sayan_axl_uninstall(){
+function sayan_axl_uninstall() {
   Drupal::configFactory()->getEditable('core.site_information')->clear('siteapikey')->save();
 }

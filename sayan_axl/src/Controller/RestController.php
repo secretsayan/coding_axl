@@ -3,28 +3,28 @@
 namespace Drupal\sayan_axl\Controller;
 
 use Drupal\node\Entity\Node;
-use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\node\NodeInterface;
 
+/**
+ * Controller class for json representation.
+ */
 class RestController {
 
   /**
-   *
-   * @param unknown $id
-   * @return multitype:NULL
+   * Function to get response.
    */
-  public function getContent($apikey,$id){
+  public function getContent($apikey, $id) {
 
     $node = Node::load($id);
     $site_api_key = \Drupal::config('core.site_information')->get('siteapikey');
-    if ($node instanceof  NodeInterface && $node->getType() == "page" && $apikey == $site_api_key){
+    if ($node instanceof  NodeInterface && $node->getType() == "page" && $apikey == $site_api_key) {
 
       $serializer = \Drupal::service('serializer');
       $data = $serializer->serialize($node, 'json', ['plugin_id' => 'entity']);
 
-    }else{
+    }
+    else {
       $data = "Access Denied";
     }
 
@@ -34,4 +34,5 @@ class RestController {
     return $response;
 
   }
+
 }
