@@ -9,30 +9,33 @@ use Drupal\node\NodeInterface;
 /**
  * Controller class for json representation.
  */
-class RestController {
+class RestController
+{
 
-  /**
-   * Function to get response.
-   */
-  public function getContent($apikey, $id) {
+    /**
+     * Function to get response.
+     */
+    public function getContent($apikey, $id)
+    {
 
-    $node = Node::load($id);
-    $site_api_key = \Drupal::config('core.site_information')->get('siteapikey');
-    if ($node instanceof  NodeInterface && $node->getType() == "page" && $apikey == $site_api_key) {
+        $node = Node::load($id);
+        $site_api_key = \Drupal::config('core.site_information')->get('siteapikey');
 
-      $serializer = \Drupal::service('serializer');
-      $data = $serializer->serialize($node, 'json', ['plugin_id' => 'entity']);
+        // Check to see node is type "basic page" and "apikey" entered is correct
+        if ($node instanceof  NodeInterface && $node->getType() == "page" && $apikey == $site_api_key) {
+
+            $serializer = \Drupal::service('serializer');
+            $data = $serializer->serialize($node, 'json', ['plugin_id' => 'entity']);
+
+        } else {
+            $data = "Access Denied";
+        }
+
+        $response = new Response($data);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
 
     }
-    else {
-      $data = "Access Denied";
-    }
-
-    $response = new Response($data);
-    $response->headers->set('Content-Type', 'application/json');
-
-    return $response;
-
-  }
 
 }

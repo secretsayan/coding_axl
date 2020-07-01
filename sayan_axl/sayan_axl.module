@@ -43,21 +43,24 @@ function sayan_axl_form_alter(&$form, FormStateInterface $form_state, $form_id) 
   if ($form_id == 'system_site_information_settings') {
     $site_api_key = \Drupal::config('core.site_information')->get('siteapikey');
 
-    $form['siteapikey'] = [
+    $form['site_information']['siteapikey'] = [
       '#title' => t('Site API KEY'),
       '#default_value' => isset($site_api_key) ? $site_api_key : t('No API Key Yet'),
       '#type' => 'textfield',
       '#maxlength' => 64,
       '#size' => 64,
       '#weight' => '-100',
+      '#description' => t('Enter Your Site API Key here'),
       '#placholder' => t('Enter API Key'),
 
     ];
 
+    // Change "Submit" button to "Update Configuration"
     if (isset($site_api_key)) {
       $form['actions']['submit']['#value'] = t('Update Configuration');
     }
 
+    // Custom submit handler to save "siteapikey"
     $form['actions']['submit']['#submit'][] = 'sayan_axl_custom_form_submit';
 
   }
@@ -69,5 +72,8 @@ function sayan_axl_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 function sayan_axl_custom_form_submit(&$form, &$form_state) {
 
   \Drupal::configFactory()->getEditable('core.site_information')->set('siteapikey', $form_state->getValue('siteapikey'))->save();
-  drupal_set_message(t("API KEY Saved Successfully"));
+
+  // Show message using messenger service.
+  $messenger = \Drupal::messenger();
+  $messenger->addMessage(t('API KEY Saved Successfully'));
 }
